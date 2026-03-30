@@ -371,7 +371,10 @@ function(godotcpp_generate)
     target_include_directories(
         godot-cpp
         ${GODOTCPP_SYSTEM_HEADERS_ATTRIBUTE}
-        PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/gen/include
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/gen/include>
+        $<INSTALL_INTERFACE:include>
     )
 
     # gersemi: off
@@ -416,4 +419,29 @@ function(godotcpp_generate)
     elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
         windows_generate()
     endif()
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+set(GODOT_CPP_PACKAGE_NAME godot-cpp) # the find_package name
+set(GODOT_CPP_PACKAGE_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${GODOT_CPP_PACKAGE_NAME}")
+
+configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/config.cmake.in
+    "${PROJECT_BINARY_DIR}/cmake/${GODOT_CPP_PACKAGE_NAME}-config.cmake"
+    INSTALL_DESTINATION "${GODOT_CPP_PACKAGE_DESTINATION}"
+)
+
+install(FILES ${PROJECT_BINARY_DIR}/cmake/${GODOT_CPP_PACKAGE_NAME}-config.cmake
+    DESTINATION ${GODOT_CPP_PACKAGE_DESTINATION}
+)
+
+install(TARGETS godot-cpp EXPORT godot_cpp_targets)
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gen/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT godot_cpp_targets
+    NAMESPACE godot-cpp::
+    FILE ${GODOT_CPP_PACKAGE_NAME}-targets.cmake
+    DESTINATION "${GODOT_CPP_PACKAGE_DESTINATION}")
+
 endfunction()
