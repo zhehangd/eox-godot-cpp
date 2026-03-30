@@ -1,3 +1,8 @@
+# Eox's godot-cpp
+
+This is a patched fork of [godot-cpp](https://github.com/godotengine/godot-cpp)
+which exists to satisfy my personal needs.
+
 # godot-cpp
 
 > [!NOTE]
