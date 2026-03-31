@@ -102,8 +102,10 @@ private:
 	static LocalVector<StringName> class_register_order;
 	static AHashMap<StringName, Object *> engine_singletons;
 	static std::mutex engine_singletons_mutex;
+
 public:
 	static MethodBind *bind_methodfi(uint32_t p_flags, MethodBind *p_bind, const MethodDefinition &method_name, const void **p_defs, int p_defcount);
+
 private:
 	static void initialize_class(const ClassInfo &cl);
 	static void bind_method_godot(const StringName &p_class_name, MethodBind *p_method);
